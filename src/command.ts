@@ -40,9 +40,9 @@ export class NormalCommand extends Command {
 export class JsonCommand extends Command {
     static parse(q: string): JsonCommand {
         const s = q.split(":");
-        if (s.length === 2) {
-            const [file, path] = s;
-            return new JsonCommand(file, JsonPath.parse(path));
+        if (s.length >= 2) {
+            const path = s.slice(1).join(":");
+            return new JsonCommand(s[0], JsonPath.parse(path));
         }
         throw Error(`cannot parse json command: ${q}`);
     }
