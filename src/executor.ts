@@ -22,6 +22,7 @@ export class Executor {
                 await command.execute();
             } catch (e) {
                 console.error(e);
+                break;
             }
         }
     }
