@@ -7,10 +7,10 @@ import { Command, NormalCommand, JsonCommand } from "./command";
 const parser = new ArgumentParser({});
 parser.addArgument(["-i", "--initial"], { help: "run command initially", action: "storeTrue" });
 parser.addArgument(["-d", "--debounce"], {
-    help: "debounce (default: 1000)",
+    help: "debounce (default: 0)",
     metavar: "msec",
     type: "int",
-    defaultValue: 1000,
+    defaultValue: 0,
 });
 parser.addArgument(["-w", "--directory"], {
     dest: "directories",
