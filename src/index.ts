@@ -5,12 +5,15 @@ import { Executor } from "./executor";
 import { Command, NormalCommand, JsonCommand } from "./command";
 
 const parser = new ArgumentParser({});
-parser.addArgument(["-i", "--initial"], { help: "run command initially", action: "storeTrue" });
+parser.addArgument(["-k", "--kill"], {
+    help: "kill previous process when file changed",
+    action: "storeTrue",
+});
 parser.addArgument(["-d", "--debounce"], {
-    help: "debounce (default: 0)",
-    metavar: "msec",
+    help: "debounce (default: 1000)",
+    metavar: "MSEC",
     type: "int",
-    defaultValue: 0,
+    defaultValue: 1000,
 });
 parser.addArgument(["-w", "--directory"], {
     dest: "directories",
@@ -41,7 +44,7 @@ parser.addArgument(["-x", "--exclude"], {
 
 interface Args {
     debounce: number;
-    initial: boolean;
+    kill: boolean;
     directories: string[];
     commands: Command[];
     exclude: null | RegExp;
@@ -50,10 +53,7 @@ interface Args {
 (async () => {
     const args: Args = parser.parseArgs();
 
-    const executor = new Executor(args.debounce, args.commands);
-    if (args.initial) {
-        await executor.execute();
-    }
+    const executor = new Executor(args.debounce, args.kill, args.commands);
 
     const watcher = chokidar.watch(args.directories, { ignored: args.exclude });
     watcher.on("add", () => executor.execute());

@@ -1,24 +1,22 @@
 import * as JsonPath from "./parser";
 import * as fs from "fs";
-import { spawn } from "child_process";
+import { spawn, ChildProcess } from "child_process";
 
 export abstract class Command {
-    abstract async commandargs(): Promise<[string, string[]]>;
+    abstract commandargs(callback: (err: null | Error, cmd?: [string, string[]]) => void): void;
 
-    async execute(): Promise<void> {
-        const [cmd, args] = await this.commandargs();
-
-        return await new Promise<void>((resolve, reject) => {
-            const c = spawn(cmd, args);
-            c.stdout.on("data", data => console.log(data.toString().trim()));
-            c.stderr.on("data", data => console.error(data.toString().trim()));
-            c.on("close", code => {
-                if (code === 0) {
-                    resolve();
-                } else {
-                    reject(code);
-                }
-            });
+    async execute(callback: (err: null | Error, proc?: ChildProcess) => void): Promise<void> {
+        this.commandargs((err, cmdargs) => {
+            if (err) {
+                return callback(err);
+            }
+            if (cmdargs === undefined) {
+                return callback(
+                    new Error("BUG: Command.execute: no error but cmdargs === undefined")
+                );
+            }
+            const [cmd, args] = cmdargs;
+            return callback(null, spawn(cmd, args));
         });
     }
 }
@@ -32,8 +30,8 @@ export class NormalCommand extends Command {
         super();
     }
 
-    async commandargs(): Promise<[string, string[]]> {
-        return [this.command, this.args];
+    commandargs(callback: (err: null | Error, cmd?: [string, string[]]) => void): void {
+        callback(null, [this.command, this.args]);
     }
 }
 
@@ -62,17 +60,14 @@ export class JsonCommand extends Command {
         return obj;
     }
 
-    async commandargs(): Promise<any> {
-        const contents = await new Promise<{ [key: string]: any }>((resolve, reject) => {
-            fs.readFile(this.file, "utf8", (err, text) => {
-                if (err) {
-                    reject(err);
-                } else {
-                    resolve(JSON.parse(text));
-                }
-            });
+    commandargs(callback: (err: null | Error, cmd?: [string, string[]]) => void): void {
+        fs.readFile(this.file, "utf8", (err, text) => {
+            if (err) {
+                callback(err);
+            } else {
+                const cmd = (this.getPath(JSON.parse(text)) as string).split(/\s+/);
+                callback(null, [cmd[0], cmd.slice(1)]);
+            }
         });
-        const cmd = (this.getPath(contents) as string).split(/\s+/);
-        return [cmd[0], cmd.slice(1)];
     }
 }

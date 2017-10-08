@@ -1,13 +1,13 @@
 {
     "name": "aurel",
-    "version": "0.1.4",
+    "version": "0.2.0",
     "description": "auto reload",
     "main": "lib/index.js",
     "repository": "https://github.com/philopon/aurel",
     "author": "Hirotomo Moriwaki <philopon.dependence@gmail.com>",
     "license": "MIT",
     "bin": {
-      "aurel": "./bin/aurel"
+        "aurel": "./bin/aurel"
     },
     "devDependencies": {
         "@types/argparse": "~1.0.33",
