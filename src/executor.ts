@@ -4,10 +4,11 @@ import { ChildProcess } from "child_process";
 export class Executor {
     public last: number = 0;
     public current: ChildProcess | null = null;
+    public queue: Array<() => void> = [];
 
     constructor(public debounce: number, public kill: boolean, public commands: Array<Command>) {}
 
-    _execute(commands: Command[], callback: (err: null | string) => void): void {
+    execute_commands(commands: Command[], callback: (err: null | string) => void): void {
         if (commands.length === 0) {
             return callback(null);
         }
@@ -23,16 +24,39 @@ export class Executor {
             proc.stdout.on("data", data => console.log(data.toString().trim()));
             proc.stderr.on("data", data => console.error(data.toString().trim()));
             proc.on("close", (code, signal) => {
-                this.current = null;
                 if (code === null) {
                     return callback(`signal: ${signal}`);
                 }
                 if (code === 0) {
-                    return this._execute(commands.slice(1), callback);
+                    return this.execute_commands(commands.slice(1), callback);
                 } else {
                     return callback(`command failure with exit code: ${code}`);
                 }
             });
+        });
+    }
+
+    _execute() {
+        if (this.kill && this.current) {
+            this.current.kill();
+            this.queue.push(() => this._execute());
+        }
+        if (this.current) {
+            return;
+        }
+        this.execute_commands([...this.commands], err => {
+            if (err) {
+                console.error(err);
+            }
+            this.current = null;
+            while (true) {
+                const task = this.queue.pop();
+                if (task) {
+                    task();
+                } else {
+                    break;
+                }
+            }
         });
     }
 
@@ -43,17 +67,6 @@ export class Executor {
         } else {
             return;
         }
-        if (this.kill && this.current) {
-            this.current.kill();
-            this.current = null;
-        }
-        if (this.current) {
-            return;
-        }
-        this._execute([...this.commands], err => {
-            if (err) {
-                console.error(err.toString());
-            }
-        });
+        this._execute();
     }
 }
