@@ -19,12 +19,14 @@ parser.addArgument(["-w", "--directory"], {
     dest: "directories",
     help: "directories to watch",
     action: "append",
+    metavar: "DIR",
     defaultValue: [],
 });
 parser.addArgument(["-c", "--command"], {
     dest: "commands",
     help: "commands",
     action: "append",
+    metavar: "COMMAND",
     defaultValue: [],
     type: NormalCommand.parse,
 });
@@ -32,12 +34,14 @@ parser.addArgument(["-j", "--json"], {
     dest: "commands",
     help: "commands from json",
     action: "append",
+    metavar: "QUERY",
     defaultValue: [],
     type: JsonCommand.parse,
 });
 parser.addArgument(["-x", "--exclude"], {
     help: "exclude file regex",
     action: "store",
+    metavar: "REGEXP",
     defaultValue: undefined,
     type: (v: string) => new RegExp(v),
 });

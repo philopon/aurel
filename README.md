@@ -10,23 +10,21 @@ $ npm install -g aurel
 
 # how to use
 ```console
-% aurel --help
-usage: aurel [-h] [-k] [-d MSEC] [-w DIRECTORIES] [-c COMMANDS] [-j COMMANDS]
-             [-x EXCLUDE]
-
+% ./bin/aurel --help
+usage: aurel [-h] [-k] [-d MSEC] [-w DIR] [-c COMMAND] [-j QUERY] [-x REGEXP]
 
 Optional arguments:
   -h, --help            Show this help message and exit.
   -k, --kill            kill previous process when file changed
   -d MSEC, --debounce MSEC
                         debounce (default: 1000)
-  -w DIRECTORIES, --directory DIRECTORIES
+  -w DIR, --directory DIR
                         directories to watch
-  -c COMMANDS, --command COMMANDS
+  -c COMMAND, --command COMMAND
                         commands
-  -j COMMANDS, --json COMMANDS
+  -j QUERY, --json QUERY
                         commands from json
-  -x EXCLUDE, --exclude EXCLUDE
+  -x REGEXP, --exclude REGEXP
                         exclude file regex
 ```
 
