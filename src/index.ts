@@ -10,10 +10,10 @@ parser.addArgument(["-k", "--kill"], {
     action: "storeTrue",
 });
 parser.addArgument(["-d", "--debounce"], {
-    help: "debounce (default: 1000)",
+    help: "debounce (default: 100)",
     metavar: "MSEC",
     type: "int",
-    defaultValue: 1000,
+    defaultValue: 100,
 });
 parser.addArgument(["-w", "--directory"], {
     dest: "directories",
