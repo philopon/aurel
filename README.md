@@ -1,4 +1,6 @@
 # aurel
+[![npm](https://img.shields.io/npm/v/aurel.svg)](https://www.npmjs.com/package/aurel)
+
 auto reload daemon
 
 # install
