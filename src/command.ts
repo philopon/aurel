@@ -48,7 +48,7 @@ export class JsonCommand extends Command {
     }
 
     static parse_scripts(q: string): JsonCommand {
-        const json = path.join(findRoot(), "package.json");
+        const json = path.join(findRoot(process.cwd()), "package.json");
         return new JsonCommand(json, [
             new JsonPath.ObjectPath("scripts"),
             new JsonPath.ObjectPath(q),
