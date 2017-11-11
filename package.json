@@ -13,12 +13,12 @@
         "@types/argparse": "~1.0.33",
         "@types/chokidar": "~1.7.3",
         "find-root": "~1.1.0",
-        "prettier": "~1.7.4",
-        "typescript": "~2.5.3"
+        "prettier": "~1.8.2",
+        "typescript": "~2.6.1"
     },
     "dependencies": {
         "argparse": "~1.0.9",
         "chokidar": "~1.7.0",
-        "parjs": "~0.6.0"
+        "parjs": "0.6.0"
     }
 }
