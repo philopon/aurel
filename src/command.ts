@@ -1,6 +1,8 @@
 import * as JsonPath from "./parser";
 import * as fs from "fs";
 import { spawn, ChildProcess } from "child_process";
+import * as path from "path";
+import * as findRoot from "find-root";
 
 export abstract class Command {
     abstract commandargs(callback: (err: null | Error, cmd?: [string, string[]]) => void): void;
@@ -43,6 +45,14 @@ export class JsonCommand extends Command {
             return new JsonCommand(s[0], JsonPath.parse(path));
         }
         throw Error(`cannot parse json command: ${q}`);
+    }
+
+    static parse_scripts(q: string): JsonCommand {
+        const json = path.join(findRoot(), "package.json");
+        return new JsonCommand(json, [
+            new JsonPath.ObjectPath("scripts"),
+            new JsonPath.ObjectPath(q),
+        ]);
     }
 
     constructor(public file: string, public path: JsonPath.Path[]) {

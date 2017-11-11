@@ -38,6 +38,14 @@ parser.addArgument(["-j", "--json"], {
     defaultValue: [],
     type: JsonCommand.parse,
 });
+parser.addArgument(["-s", "--scripts"], {
+    dest: "commands",
+    help: "commands from npm scripts",
+    action: "append",
+    metavar: "QUERY",
+    defaultValue: [],
+    type: JsonCommand.parse_scripts,
+});
 parser.addArgument(["-x", "--exclude"], {
     help: "exclude file regex",
     action: "store",
